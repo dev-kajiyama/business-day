@@ -1,4 +1,4 @@
-name: "Business Day"
+name: "Business Day Utility"
 description: "Action to check about business day of the month"
 inputs:
   country:
