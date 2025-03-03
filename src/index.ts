@@ -2,26 +2,26 @@ import * as core from '@actions/core';
 import Holidays from 'date-holidays';
 
 /**
- * 指定された年月の最初の営業日を返す
- * ＊営業日：土曜・日曜、日本の祝日を除く
+ * Returns the first business day of the specified year and month
+ * *Business day: Excluding Saturdays, Sundays, and holidays
  *
- * @param year 西暦年
- * @param month 0〜11の月（例: 0=1月）
- * @returns 営業日の Date オブジェクト
+ * @param year Year in Western calendar
+ * @param month Month from 0-11 (e.g., 0=January)
+ * @returns Date object of the business day
  */
 export function getFirstBusinessDay(year: number, month: number): Date {
     const country = core.getInput('country');
     const hd = new Holidays(country);
     let date = new Date(year, month, 1);
-    // ループで営業日を探す
+    // Loop to find a business day
     while (true) {
         const dayOfWeek = date.getDay();
-        // 週末は除外
+        // Exclude weekends
         if (dayOfWeek === 0 || dayOfWeek === 6) {
             date.setDate(date.getDate() + 1);
             continue;
         }
-        // 日本の祝日も除外（祝日の場合、hd.isHoliday(date) は holiday 情報を返す）
+        // Also exclude holidays
         if (hd.isHoliday(date)) {
             date.setDate(date.getDate() + 1);
             continue;
@@ -32,8 +32,8 @@ export function getFirstBusinessDay(year: number, month: number): Date {
 
 function run(): void {
     try {
-        const timezone = core.getInput('timezone');
-        const locale = core.getInput('locale');
+        const timezone = core.getInput('timezone') || undefined;
+        const locale = core.getInput('locale') || undefined;
         const today = new Date(new Date().toLocaleString(locale, { timeZone: timezone }));
         const firstBusinessDay = getFirstBusinessDay(today.getFullYear(), today.getMonth());
         const isFirstBusinessDay =
@@ -42,11 +42,7 @@ function run(): void {
             today.getDate() === firstBusinessDay.getDate();
 
         core.setOutput('is_first_business_day', isFirstBusinessDay.toString());
-        core.setOutput('first_business_day', firstBusinessDay.toISOString());
-
-        console.log(`Today: ${today.toDateString()}`);
-        console.log(`First Business Day: ${firstBusinessDay.toDateString()}`);
-        console.log(`Is today the first business day? ${isFirstBusinessDay}`);
+        core.setOutput('first_business_day', firstBusinessDay);
     } catch (error) {
         if (error instanceof Error) {
             core.setFailed(error.message);
@@ -56,7 +52,7 @@ function run(): void {
     }
 }
 
-// GitHub Action として実行された場合に run() を呼び出す
+// Call run() when executed as a GitHub Action
 if (require.main === module) {
     run();
 }
