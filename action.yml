@@ -1,0 +1,20 @@
+name: "Business Day"
+description: "Action to check about business day of the month"
+inputs:
+  country:
+    description: "Country code (e.g. JP)"
+    required: true
+  timezone:
+    description: "Timezone (e.g. Asia/Tokyo)"
+    required: false
+  locale:
+    description: "Locale string (e.g. ja-JP)"
+    required: false
+outputs:
+  first_business_day:
+    description: "Date object of the first business day of the month"
+  is_first_business_day:
+    description: "Returns 'true' if today is the first business day of the month, otherwise 'false'"
+runs:
+  using: "node20"
+  main: "dist/index.js"

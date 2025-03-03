@@ -1,0 +1,45 @@
+on:
+  push
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        id: node-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Build 
+        run: npm run build
+
+      - name: Test
+        run: npm run test
+
+      - name: Run action
+        uses: ./
+        id: check
+        with:
+          country: JP
+          timezone: Asia/Tokyo
+          locale: ja-JP
+
+      - name: Display result
+        run: |
+          echo "${{ steps.check.outputs.is_first_business_day }}"
+          echo "${{ steps.check.outputs.first_business_day }}"
