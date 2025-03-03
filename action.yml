@@ -1,0 +1,9 @@
+name: "Check if Today is the First Business Day"
+description: "月の最初の営業日かどうかをチェックするアクション（日本の祝日を除外）"
+inputs: {}
+outputs:
+  is_first_business_day:
+    description: "今日が月の最初の営業日なら 'true', そうでなければ 'false'"
+runs:
+  using: "node12"
+  main: "dist/index.js"

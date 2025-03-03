@@ -1,0 +1,16 @@
+jobs:
+  check_first_business_day:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run First Business Day Check
+        uses: ./
+        id: check
+
+      - name: Display result
+        run: echo "${{ steps.check.outputs.is_first_business_day }}"
+
+      - name: Display result
+        run: echo "${{ steps.check.outputs.first_business_day }}"
