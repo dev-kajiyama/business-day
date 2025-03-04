@@ -4,12 +4,13 @@
     "description": "GitHub Action to check about business day",
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc",
+        "build": "tsc && ncc build lib/index.js",
         "start": "node dist/index.js",
         "test": "jest"
     },
     "dependencies": {
         "@actions/core": "^1.11.1",
+        "@vercel/ncc": "^0.38.3",
         "date-holidays": "^3.23.22"
     },
     "devDependencies": {
